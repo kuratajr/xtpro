@@ -90,7 +90,7 @@ for platform in "${!SERVER_PLATFORMS[@]}"; do
     
     echo -e "${BLUE}  → Building $GOOS/$GOARCH...${NC}"
     
-    GOOS=$GOOS GOARCH=$GOARCH go build \
+    CGO_ENABLED=0 GOOS=$GOOS GOARCH=$GOARCH  go build \
         -ldflags="-s -w -X 'main.Version=$VERSION' -X 'main.BuildTime=$BUILD_TIME' -X 'main.GitCommit=$GIT_COMMIT'" \
         -o "../../$SERVER_DIR/$OUTPUT" \
         ./cmd/server
