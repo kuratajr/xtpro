@@ -1461,8 +1461,16 @@ func (s *server) sendDashboardUpdate(conn *websocket.Conn) error {
 		baseDomain = s.httpProxy.GetBaseDomain()
 	}
 
-	var activeProxyConnections int64
+	sessions := make([]*clientSession, 0, len(s.clients))
 	for _, session := range s.clients {
+		sessions = append(sessions, session)
+	}
+	sort.Slice(sessions, func(i, j int) bool {
+		return sessions[i].clientID < sessions[j].clientID
+	})
+
+	var activeProxyConnections int64
+	for _, session := range sessions {
 		host, port, _ := net.SplitHostPort(session.target)
 		if host == "" || host == "localhost" || host == "127.0.0.1" || host == "::1" {
 			host = session.remoteIP
